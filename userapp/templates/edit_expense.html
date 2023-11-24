@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+{% extends "index.html" %}
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container-fluid pt-4 px-4">
+        <div class="row g-4">
+        <div class="col-sm-12 col-xl">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Add expense</h6>
+                <form method='post' action='{% url "expense_update" dataid=data.id %}'>
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="expense name" class="form-label">Expense name</label>
+                        <input type="text" class="form-control" id="exampleInputEmail1"  name='expense_name' placeholder="expense_name" value="{{data.expense_name}}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="Amount" class="form-label">Amount</label>
+                        <input type="text" class="form-control" id="exampleInputEmail1" name='amount'placeholder="Amount" value="{{data.amount}}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="date" class="form-label">Date</label>
+                        <input type="date" class="form-control" id="exampleInputEmail1" name='date' value="{{data.date|date:'Y-m-d'}}">
+                    </div>
+                    <div class="form-floating mb-3">
+                        <select class="form-select" id="floatingSelect" aria-label="Floating label select example" name='category'>
+                            <option selected="">{{data.category}}</option>
+                            <option>Food</option>
+                            <option >Rent</option>
+                            <option >Travel</option>
+                            <option >Electricity</option>
+                            <option >Water</option>
+                        </select>
+                        <label for="floatingSelect">category of expense</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    </div>
+       
+    
+</body>
+</html>
+{% endblock %}

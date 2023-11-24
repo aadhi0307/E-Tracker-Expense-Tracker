@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+{% extends "index.html" %}
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div style="margin-left:25px;margin-top:20px">
+    <form method="get" action="{% url 'expense_history' %}" >
+        <!-- Existing search input -->
+        <input   style="width:250px" type="text" name="search" placeholder="Search by expense name" {% if search_query %}value="{{ search_query }}"{% endif %}>
+    
+        <!-- New inputs for date range and category -->
+        <input type="date"  style="width:250px;" name="start_date" placeholder="Start Date" {% if start_date %}value="{{ start_date }}"{% endif %}>
+        <input type="date" name="end_date" placeholder="End Date" {% if end_date %}value="{{ end_date }}"{% endif %}>
+    
+        <select name="category">
+            <option value="" {% if not category %}selected{% endif %}>All Categories</option>
+            <!-- Add options for categories based on your data -->
+            <!-- Example: -->
+            <option value="Food" {% if category == 'Food' %}selected{% endif %}>Food</option>
+            <option value="Rent" {% if category == 'Rent' %}selected{% endif %}>Rent</option>
+            <option value="Electricity" {% if category == 'Electricity' %}selected{% endif %}>Electricity</option>
+            <option value="Water" {% if category == 'Water' %}selected{% endif %}>Water</option>
+            <option value="Travel" {% if category == 'Travel' %}selected{% endif %}>Travel</option>
+            <!-- Add more options as needed -->
+        </select>
+    
+        <button type="submit" class="btn btn-primary">Search</button>
+        <a href="{% url 'expense_history' %}" class="btn btn-secondary">Clear</a>
+    </form>
+</div>
+    <div class="container-fluid pt-4 px-4">
+        <div class="row g-4">
+            <div class="col-sm-12 col-xl">
+                <div class="bg-light rounded h-100 p-4">
+                    <h6 class="mb-4">Expense history</h6>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Sl.no</th>
+                                    <th scope="col">Expense name</th>
+                                    <th scope="col">Amount</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Expense category</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for i in page.object_list %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ i.expense_name }}</td>
+                                    <td>{{ i.amount }}</td>
+                                    <td>{{ i.date }}</td>
+                                    <td>{{ i.category }}</td>
+                                    <td>
+                                       <form action="{% url 'expense_edit' dataid=i.id %}">
+                                            <button type="submit" class="btn btn-success mr-2">Edit</button>
+                                        </form>
+                                    </td>
+                                    <td>
+                                        <form action="{% url "expense_delete" dataid=i.id %}">
+                                            <button type="submit" class="btn btn-danger mr-2">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Pagination links -->
+    <div class="pagination">
+        <span class="step-links">
+           
+
+            <span class="current-page" style="margin-left:50px">Page {{ page.number }} of {{ page.paginator.num_pages }}.</span>
+            
+            {% if page.has_previous %}
+            <a href="?page=1" class='btn btn-primary' style="margin-left:650px">&laquo; first</a>
+            <a href="?page={{ page.previous_page_number }}" class='btn btn-primary'>previous</a>
+            {% endif %}
+
+            {% if page.has_next %}
+                <a href="?page={{ page.next_page_number }}" class='btn btn-primary' style="margin-left:650px">next</a>
+                <a href="?page={{ page.paginator.num_pages }}"class='btn btn-primary'>last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    {% if messages %}
+        {% for i in messages %}
+            {% if i.tags == 'warning' %}
+                <script>
+                   swal('{{i}}','', 'warning');
+                </script>
+            {% elif i.tags == 'error' %}
+                <script>
+                    swal('{{i}}','', 'error');
+                </script>
+            {% else %}
+                <script>
+                    swal('{{i}}','', 'success');
+                </script>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    
+</body>
+</html>
+{% endblock %}

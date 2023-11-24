@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+{% extends "index.html" %}
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Add this in the head section of your HTML -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #printableContent, #printableContent * {
+                visibility: visible;
+            }
+            #printableContent {
+                position: absolute;
+                left: 0;
+                top: 0;
+            }
+        }
+  </style>
+    
+
+</head>
+<body>
+    <div>
+        
+       
+        <h4 style="margin-left:13px;margin-top:10px">Expense Report</h4>
+        <form action="{% url 'expense_report' %}" method="post">
+          {% csrf_token %}
+          <label for="select-month" style="margin-left:13px">Select month:</label>
+          <select name="selected_month" id="select-month">
+              <option selected>Select month</option>
+              <option value="1">January</option>
+              <option value="2">February</option>
+              <option value="3">March</option>
+              <option value="4">April</option>
+              <option value="5">May</option>
+              <option value="6">June</option>
+              <option value="7">July</option>
+              <option value="8">August</option>
+              <option value="9">September</option>
+              <option value="10">October</option>
+              <option value="11">November</option>
+              <option value="12">December</option>
+              <!-- Add other months -->
+          </select>
+      
+          <label for="select-year">Select year:</label>
+          <select name="selected_year" id="select-year">
+            <option selected>Select year</option>
+            <option value="2023">2023</option>
+            <option value="2022">2022</option>
+            <option value="2021">2021</option>
+            <option value="2020">2020</option>
+            <option value="2019">2019</option>
+            <option value="2018">2018</option>
+            <option value="2017">2017</option>
+            <option value="2016">2016</option>
+            <option value="2015">2015</option>
+              <!-- Add other years -->
+          </select>
+      
+          <button class="btn btn-danger"type="submit">Generate Report</button><br>
+          {% if error_message %}
+              <p style="color: red;margin-left:30px" >{{ error_message }}</p>
+          {% endif %}
+      
+        <div style="width:1000px;margin-left:13px" class="container" id="printableContent">
+                  {% if report_type %}
+                    <h5 style="margin-top:10px">{{ report_type }}</h5>
+                  {% endif %}
+                  <table class="table">
+                    <thead class="thead-dark">
+                      <tr>
+                        <th scope="col">Sl.no</th>
+                        <th scope="col">Expense name</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Expense category</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    {% if expenses %}
+                      {% for expense in expenses %}
+                                      <tr>
+                                        <td>{{forloop.counter}}</td>
+                                        <td>{{ expense.expense_name }}</td>
+                                        <td>{{ expense.amount }}</td>
+                                        <td>{{ expense.date }}</td>
+                                        <td>{{ expense.category }}</td>
+                                        
+                                      </tr>
+                      {% endfor %}
+                    {% else %}
+                      <tr>
+                          <td colspan="5">No data to display</td>
+                      </tr>
+                    {% endif %}  
+                    
+                    </tbody>
+                  </table>
+               
+                  <p style="color:black;font-weight: normal;">Total Expense= {{ total_expense }}</p>
+                
+                      
+                            <h5>Total Expenses by Category</h5>
+              <table class="table">
+                  <thead class="thead-dark">
+                      <tr>
+                          <th scope="col">Category</th>
+                          <th scope="col">Total Expense</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                    {% if expenses %}
+                      {% for category_data in categories_data %}
+                          {% if category_data.category %}
+                              <tr>
+                                  <td>{{ category_data.category }}</td>
+                                  <td>{{ category_data.total_expense }}</td>
+                              </tr>
+                          {% endif %}
+                      {% endfor %}
+                    {% else %}
+                      <tr>
+                          <td colspan="5">No data to display</td>
+                      </tr>
+                    {% endif %}
+                  </tbody>
+              </table>
+
+            <h5>Bar graph</h5>
+            {% if expenses %}
+            <!-- Add this where you want the chart to appear -->
+            <canvas id="expenseChart" width="400" height="200"></canvas>
+            {% else %}
+                <tr>
+                    <td colspan="5">No data to display</td>
+                </tr>
+            {% endif %}
+
+            
+              
+            </form>
+      </div> 
+    </div>
+    <button  onclick="printPage()" class='btn btn-danger'  style="margin-left:400px">Print Report </button>
+    
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+          var ctx = document.getElementById("expenseChart").getContext("2d");
+  
+          // Use the data passed from the Django view to populate the chart
+          var chartData = {
+              labels: [{% for label in chart_labels %}"{{ label }}",{% endfor %}],
+              datasets: [{
+                  label: 'Total Expenses',
+                  data: [{% for data in chart_data %}{{ data }},{% endfor %}],
+                  backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                  borderColor: 'rgba(75, 192, 192, 1)',
+                  borderWidth: 1
+              }]
+          };
+  
+          var expenseChart = new Chart(ctx, {
+              type: 'bar',
+              data: chartData,
+              options: {
+                  scales: {
+                      y: {
+                          beginAtZero: true
+                      }
+                  }
+              }
+          });
+          
+      });
+      
+      
+  </script>
+
+  <script>
+    // Function to initiate the print process
+    function printPage() {
+        window.print();
+    }
+</script><br><br>
+
+
+</body>
+</html>
+{% endblock %}
