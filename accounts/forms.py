@@ -3,6 +3,10 @@ from django.contrib.auth import password_validation
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
 from accounts.models import CustomUser
+from django.contrib.auth.views import PasswordResetView
+from django.contrib.auth.forms import PasswordResetForm
+
+
 
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(
@@ -53,3 +57,13 @@ class CustomUserCreationForm(UserCreationForm):
         if CustomUser.objects.filter(email=email).exists():
             raise forms.ValidationError("Email already in use.")
         return email
+    
+class CustomPasswordResetForm(PasswordResetForm):
+    email = forms.EmailField(label="Email", max_length=254, widget=forms.EmailInput(attrs={'class': 'form-control','placeholder': 'Enter your existing email',}))
+    password = forms.CharField(label="New Password", widget=forms.PasswordInput(attrs={'class': 'form-control','placeholder': 'Enter your new password'}))
+    
+class CustomPasswordResetView(PasswordResetView):
+    template_name = 'password_reset_form.html'
+    email_template_name = 'custom_password_reset_email.html'
+    form_class = CustomPasswordResetForm
+    success_url = '/password_reset/done/'  
