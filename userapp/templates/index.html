@@ -251,15 +251,15 @@
     document.addEventListener('DOMContentLoaded', function () {
         var ctx = document.getElementById('expensePieChart').getContext('2d');
         var data = {
-            labels: {{ categories_data|safe }},  // Pass the categories data from Django to JavaScript
+            labels: {{ categories_data|safe }},  
             datasets: [{
-                data: {{ categories_amount|safe }},  // Pass the categories amount data from Django to JavaScript
+                data: {{ categories_amount|safe }},  
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.5)',
                     'rgba(54, 162, 235, 0.5)',
                     'rgba(255, 99, 71, 1)',
                     'rgb(0, 0, 255)',
-                    // Add more colors as needed
+                    
                 ]
                
             }]

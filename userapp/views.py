@@ -67,7 +67,7 @@ def expense_data(req):
         obj = expense(user=current_user, expense_name=en, amount=am, date=dt, category=ct)
         obj.save()
 
-        # Add the following JavaScript script
+        
         return render(req, 'add_expense.html', {'success_message': 'Expense added successfully'})
     return HttpResponse("Invalid Request")
 

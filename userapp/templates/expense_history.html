@@ -10,23 +10,23 @@
 <body>
     <div style="margin-left:25px;margin-top:20px">
     <form method="get" action="{% url 'expense_history' %}" >
-        <!-- Existing search input -->
+       
         <input   style="width:250px" type="text" name="search" placeholder="Search by expense name" {% if search_query %}value="{{ search_query }}"{% endif %}>
     
-        <!-- New inputs for date range and category -->
+        
         <input type="date"  style="width:250px;" name="start_date" placeholder="Start Date" {% if start_date %}value="{{ start_date }}"{% endif %}>
         <input type="date" name="end_date" placeholder="End Date" {% if end_date %}value="{{ end_date }}"{% endif %}>
     
         <select name="category">
             <option value="" {% if not category %}selected{% endif %}>All Categories</option>
-            <!-- Add options for categories based on your data -->
-            <!-- Example: -->
+            
+            
             <option value="Food" {% if category == 'Food' %}selected{% endif %}>Food</option>
             <option value="Rent" {% if category == 'Rent' %}selected{% endif %}>Rent</option>
             <option value="Electricity" {% if category == 'Electricity' %}selected{% endif %}>Electricity</option>
             <option value="Water" {% if category == 'Water' %}selected{% endif %}>Water</option>
             <option value="Travel" {% if category == 'Travel' %}selected{% endif %}>Travel</option>
-            <!-- Add more options as needed -->
+          
         </select>
     
         <button type="submit" class="btn btn-primary">Search</button>
